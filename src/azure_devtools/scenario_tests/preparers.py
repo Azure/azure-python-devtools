@@ -130,7 +130,8 @@ class SingleValueReplacer(RecordingProcessor):
 
 
 # Function wise, enabling large payload recording has nothing to do with resource preparers
-# We still base on it so that this decorator can chain with other preparers w/o too much hacks
+# We still base on it so that this decorator can acess test class's recording processors
+# and chain with other preparers w/o too much hacks
 class AllowLargeResponse(AbstractPreparer):
     def __init__(self, size_kb=1024):
         self.size_kb = size_kb
@@ -142,6 +143,10 @@ class AllowLargeResponse(AbstractPreparer):
                                 if isinstance(r, LargeResponseBodyProcessor)), None)
         if large_resp_body:
             large_resp_body._max_response_body = self.size_kb  # pylint: disable=protected-access
+
+    @property
+    def moniker(self):
+        return None
 
 # Utility
 
