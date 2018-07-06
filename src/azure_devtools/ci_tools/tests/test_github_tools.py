@@ -264,7 +264,7 @@ class GithubTools(Framework.TestCase):
         try:
             with tempfile.TemporaryDirectory() as temp_dir:
                 clone_to_path(github_token, temp_dir, "lmazuel/TestingRepo", branch_or_commit=pr.merge_commit_sha, pr_number=2)
-                assert (Path(temp_dir) / Path("README.md")).stat().st_size == 113 # File in the PR
+                assert (Path(temp_dir) / Path("README.md")).stat().st_size >= 107 # File in the PR
 
                 finished = True
         except (PermissionError, FileNotFoundError):
