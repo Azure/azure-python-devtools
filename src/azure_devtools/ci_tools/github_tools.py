@@ -333,6 +333,9 @@ class DashboardCommentableObject:  # pylint: disable=too-few-public-methods
         self._issue_or_pr = issue_or_pr
         self._header = header
 
+    def set_title(self, title):
+        pass
+
     def create_comment(self, text):
         """Mimic issue API, so we can use it everywhere.
         Return dashboard comment.
