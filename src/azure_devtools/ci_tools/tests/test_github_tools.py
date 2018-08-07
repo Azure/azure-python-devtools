@@ -132,6 +132,7 @@ class GithubTools(Framework.TestCase):
         assert error.comment is not None
         assert "Encountered an unknown error" in error.comment.body
 
+        dashboard.set_title("This does nothing but the method must exist")
         dashboard.create_comment("New text comment")
         after_size_2 = len(list(issue.get_comments()))
         assert after_size == after_size_2
