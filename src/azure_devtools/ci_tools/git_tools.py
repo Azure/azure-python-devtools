@@ -37,7 +37,7 @@ def do_commit(repo, message_template, branch_name, hexsha):
     repo.git.add(repo.working_tree_dir)
 
     if not repo.git.diff(staged=True):
-        _LOGGER.warning('No modified files in this Autorest run')
+        _LOGGER.warning('No modified files to push to Github')
         return False
 
     checkout_and_create_branch(repo, branch_name)
