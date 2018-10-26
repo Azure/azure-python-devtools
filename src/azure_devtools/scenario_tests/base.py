@@ -37,7 +37,7 @@ class IntegrationTestBase(unittest.TestCase):
 
         with open(path, mode='r+b') as f:
             if full_random:
-                chunk = str(map(lambda _: chr((128 - 32) * ord(_) / 255 + 32), os.urandom(1024)))
+                chunk = "".join(chr((126 - 32) * ord(_) / 255 + 32) for _ in os.urandom(1024))
             else:
                 chunk = bytearray([0] * 1024)
             for _ in range(size_kb):
