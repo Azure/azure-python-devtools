@@ -37,9 +37,10 @@ class IntegrationTestBase(unittest.TestCase):
 
         with open(path, mode='r+b') as f:
             if full_random:
-                chunk = "".join(chr(int((126 - 32) \
+                chunk = bytearray("".join(chr(int((126 - 32) \
                                         * (ord(_) if isinstance(_, str) else _) \
-                                        / 255 + 32)) for _ in os.urandom(1024))
+                                        / 255 + 32)) for _ in os.urandom(1024)),
+                                  'utf-8')
             else:
                 chunk = bytearray([0] * 1024)
             for _ in range(size_kb):
