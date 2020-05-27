@@ -23,7 +23,10 @@ class RecordingProcessor(object):
         # but we don't want to modify the case of original header key.
         for key, values in entity['headers'].items():
             if key.lower() == header.lower():
-                entity['headers'][key] = [replace_fn(v) for v in values]
+                if isinstance(values, list):
+                    entity['headers'][key] = [replace_fn(v) for v in values]
+                else:
+                    entity['headers'][key] = replace_fn(values)
 
 
 class SubscriptionRecordingProcessor(RecordingProcessor):
@@ -129,8 +132,9 @@ class OAuthRequestResponsesFilter(RecordingProcessor):
     def process_request(self, request):
         # filter request like:
         # GET https://login.microsoftonline.com/72f988bf-86f1-41af-91ab-2d7cd011db47/oauth2/token
+        # POST https://login.microsoftonline.com/72f988bf-86f1-41af-91ab-2d7cd011db47/oauth2/v2.0/token
         import re
-        if not re.match('https://login.microsoftonline.com/([^/]+)/oauth2/token', request.uri):
+        if not re.match('https://login.microsoftonline.com/([^/]+)/oauth2(?:/v2.0)?/token', request.uri):
             return request
         return None
 
