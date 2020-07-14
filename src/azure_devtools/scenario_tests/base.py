@@ -35,13 +35,16 @@ class IntegrationTestBase(unittest.TestCase):
         os.close(fd)
         self.addCleanup(lambda: os.remove(path))
 
+        import math
         with open(path, mode='r+b') as f:
             if full_random:
                 chunk = os.urandom(1024)
             else:
                 chunk = bytearray([0] * 1024)
-            for _ in range(size_kb):
+            for _ in range(math.floor(size_kb)):
                 f.write(chunk)
+            chunk = os.urandom(int(1024 * (size_kb % 1)))
+            f.write(chunk)
 
         return path
 
