@@ -95,8 +95,8 @@ class LargeResponseBodyProcessor(RecordingProcessor):
 
                 response['body']['string'] = \
                     "!!! The response body has been omitted from the recording because it is larger " \
-                    "than {} KB. It will be replaced with blank content of {} bytes while replay. " \
-                    "{}{}".format(self._max_response_body, length, self.control_flag, length)
+                    "than {max_body} KB. It will be replaced with blank content of {length} bytes while replay. " \
+                    "{flag}{length}".format(max_body=self._max_response_body, length=length, flag=self.control_flag)
         return response
 
 
