@@ -81,7 +81,7 @@ William Shakespeare
             f.write(content)
             f.seek(0)
             hash_value = get_sha1_hash(f.name)
-            self.assertEqual('6487bbdbd848686338d729e6076da1a795d1ae747642bf906469c6ccd9e642f9', hash_value)
+            self.assertEqual('1a9ea462ce80aac3f1cacbdf59d3a630df01b933593a2c53bccc25ecc2569e31', hash_value)
 
     def test_text_payload(self):
         http_entity = mock.MagicMock()
