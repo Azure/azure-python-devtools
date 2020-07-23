@@ -49,7 +49,7 @@ class TestIntegrationTestBase(unittest.TestCase):
         self.assertEqual(len(tb._cleanups), 3)  # pylint: disable=protected-access
         with open(random_file_3, 'rb') as fq:
             # the file is blank
-            self.assertTrue(any(b for b in fq.read(8.5 * 1024) if b != '\x00'))
+            self.assertTrue(any(b for b in fq.read(int(8.5 * 1024)) if b != '\x00'))
 
         random_dir = tb.create_temp_dir()
         self.addCleanup(lambda: os.rmdir(random_dir))
