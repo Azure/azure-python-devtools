@@ -30,7 +30,10 @@ class IntegrationTestBase(unittest.TestCase):
         return create_random_name(prefix=prefix, length=length)
 
     def create_temp_file(self, size_kb, full_random=False):
-        """ Create a temporary file for testing. The test harness will delete the file during tearing down. """
+        """
+        Create a temporary file for testing. The test harness will delete the file during tearing down.
+        :param float size_kb: specify the generated file size in kb.
+        """
         fd, path = tempfile.mkstemp()
         os.close(fd)
         self.addCleanup(lambda: os.remove(path))
@@ -40,8 +43,10 @@ class IntegrationTestBase(unittest.TestCase):
                 chunk = os.urandom(1024)
             else:
                 chunk = bytearray([0] * 1024)
-            for _ in range(size_kb):
+            for _ in range(int(size_kb)):
                 f.write(chunk)
+            chunk = os.urandom(int(1024 * (size_kb % 1)))
+            f.write(chunk)
 
         return path
 

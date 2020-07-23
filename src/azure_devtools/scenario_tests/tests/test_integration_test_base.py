@@ -42,10 +42,19 @@ class TestIntegrationTestBase(unittest.TestCase):
             # the file is blank
             self.assertTrue(any(b for b in fq.read(8 * 1024) if b != '\x00'))
 
+        random_file_3 = tb.create_temp_file(size_kb=8.5)
+        self.addCleanup(lambda: os.remove(random_file_3))
+        self.assertTrue(os.path.isfile(random_file_3))
+        self.assertEqual(os.path.getsize(random_file_3), 8.5 * 1024)
+        self.assertEqual(len(tb._cleanups), 3)  # pylint: disable=protected-access
+        with open(random_file_3, 'rb') as fq:
+            # the file is blank
+            self.assertTrue(any(b for b in fq.read(int(8.5 * 1024)) if b != '\x00'))
+
         random_dir = tb.create_temp_dir()
         self.addCleanup(lambda: os.rmdir(random_dir))
         self.assertTrue(os.path.isdir(random_dir))
-        self.assertEqual(len(tb._cleanups), 3)  # pylint: disable=protected-access
+        self.assertEqual(len(tb._cleanups), 4)  # pylint: disable=protected-access
 
     def test_live_test_default_constructor(self):
         class MockTest(LiveTest):
