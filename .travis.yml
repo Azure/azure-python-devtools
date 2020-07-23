@@ -2,16 +2,15 @@ sudo: false
 language: python
 python:
   - "2.7"
-  - "3.3"
-  - "3.4"
   - "3.5"
   - "3.6"
+  - "3.7"
+  - "3.8"
 install:
   - pip install -r requirements.txt
 script:
   - pylint src/azure_devtools/scenario_tests
-  - if [[ "$TRAVIS_PYTHON_VERSION" == "3.6" ]]; then pylint src/azure_devtools/ci_tools --ignore=tests; fi; # CI tools is Py3.6 only
-  - pytest --cov=azure_devtools
+  - pytest --cov=azure_devtools src/azure_devtools/scenario_tests
 after_success:
   - codecov
 deploy:

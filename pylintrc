@@ -1,12 +1,19 @@
 [MESSAGES CONTROL]
 # For all codes, run 'pylint --list-msgs' or go to 'http://pylint-messages.wikidot.com/all-codes'
-# C0111 Missing docstring 
+# C0111 Missing docstring
 # C0103 Invalid %s name "%s"
 # I0011 Warning locally suppressed using disable-msg
 # W0511 fixme
 # R0401 Cyclic import (because of https://github.com/PyCQA/pylint/issues/850)
 # R0913 Too many arguments - Due to the nature of the CLI many commands have large arguments set which reflect in large arguments set in corresponding methods.
-disable=C0111, C0103, W0511
+disable=
+    bad-option-value,
+    C0111,
+    C0103,
+    W0511,
+    R0401,
+    useless-object-inheritance,
+    import-outside-toplevel
 
 [FORMAT]
 max-line-length=120
@@ -23,4 +30,3 @@ init-import=yes
 
 [SIMILARITIES]
 min-similarity-lines=8
-

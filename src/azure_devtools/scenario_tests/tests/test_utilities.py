@@ -17,7 +17,7 @@ class TestUtilityFunctions(unittest.TestCase):
         self.assertTrue(isinstance(default_generated_name, str))
 
     def test_create_random_name_randomness(self):
-        self.assertEqual(100, len(set([create_random_name() for _ in range(100)])))
+        self.assertEqual(100, len({create_random_name() for _ in range(100)}))
 
     def test_create_random_name_customization(self):
         customized_name = create_random_name(prefix='pauline', length=61)
@@ -74,14 +74,14 @@ Turning again toward childish treble, pipes
 And whistles in his sound. Last scene of all,
 That ends this strange eventful history,
 Is second childishness and mere oblivion,
-Sans teeth, sans eyes, sans taste, sans everything. 
+Sans teeth, sans eyes, sans taste, sans everything.
 
 William Shakespeare
             """
             f.write(content)
             f.seek(0)
             hash_value = get_sha1_hash(f.name)
-            self.assertEqual('6487bbdbd848686338d729e6076da1a795d1ae747642bf906469c6ccd9e642f9', hash_value)
+            self.assertEqual('1a9ea462ce80aac3f1cacbdf59d3a630df01b933593a2c53bccc25ecc2569e31', hash_value)
 
     def test_text_payload(self):
         http_entity = mock.MagicMock()

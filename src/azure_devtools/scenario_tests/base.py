@@ -195,7 +195,7 @@ class ReplayableTest(IntegrationTestBase):  # pylint: disable=too-many-instance-
     @classmethod
     def _custom_request_query_matcher(cls, r1, r2):
         """ Ensure method, path, and query parameters match. """
-        from six.moves.urllib_parse import urlparse, parse_qs  # pylint: disable=import-error,relative-import
+        from six.moves.urllib_parse import urlparse, parse_qs  # pylint: disable=import-error, relative-import
 
         url1 = urlparse(r1.uri)
         url2 = urlparse(r2.uri)
