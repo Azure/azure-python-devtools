@@ -130,7 +130,7 @@ class ReplayableTest(IntegrationTestBase):  # pylint: disable=too-many-instance-
         # set up cassette
         cm = self.vcr.use_cassette(self.recording_file)
         self.cassette = cm.__enter__()
-        self.addCleanup(cm.__exit__, None, None, None)
+        self.addCleanup(cm.__exit__)
 
         # set up mock patches
         if self.in_recording:
