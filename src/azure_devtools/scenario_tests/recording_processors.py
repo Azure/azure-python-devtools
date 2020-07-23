@@ -60,6 +60,12 @@ class SubscriptionRecordingProcessor(RecordingProcessor):
                         r'https://\1/{}'.format(self._replacement),
                         retval,
                         flags=re.IGNORECASE)
+
+        # subscription presents in private dns is abnormal
+        retval = re.sub(r'\\/(subscriptions)\\/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}',
+                        r'\\/\1\\/{}'.format(self._replacement),
+                        retval,
+                        flags=re.IGNORECASE)
         return retval
 
 
