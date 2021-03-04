@@ -141,7 +141,7 @@ class ReplayableTest(IntegrationTestBase):  # pylint: disable=too-many-instance-
         self.cassette = cm.__enter__()
         self.addCleanup(cm.__exit__)
         if self.in_recording:
-            self.addCleanup(self._replace_recording_file)
+            self.addCleanup(self._save_recording_file)
 
         # set up mock patches
         if self.in_recording:
@@ -160,13 +160,13 @@ class ReplayableTest(IntegrationTestBase):  # pylint: disable=too-many-instance-
         assert not [t for t in threading.enumerate() if t.name.startswith("LROPoller")], \
             "You need to call 'result' or 'wait' on all LROPoller you have created"
 
-    def _replace_recording_file(self, *args):
+    def _save_recording_file(self, *args):
         result = self.defaultTestResult()
-        if self.in_recording and not result.errors and not result.failures and not result.skipped:
+        if self.in_recording and not result.skipped:
             self.cassette._save(force=True)
             if os.path.exists(self.recording_file):
                 os.remove(self.recording_file)
-            shutil.move(self.temp_recording_file, self.recording_file)
+            os.rename(self.temp_recording_file, self.recording_file)
 
     def _process_request_recording(self, request):
         if self.disable_recording:
