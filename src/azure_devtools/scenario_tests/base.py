@@ -160,10 +160,10 @@ class ReplayableTest(IntegrationTestBase):  # pylint: disable=too-many-instance-
         assert not [t for t in threading.enumerate() if t.name.startswith("LROPoller")], \
             "You need to call 'result' or 'wait' on all LROPoller you have created"
 
-    def _save_recording_file(self, *args):
+    def _save_recording_file(self, *args):  # pylint: disable=unused-argument
         result = self.defaultTestResult()
         if self.in_recording and not result.skipped:
-            self.cassette._save(force=True)
+            self.cassette._save(force=True)  # pylint: disable=protected-access
             if os.path.exists(self.recording_file):
                 os.remove(self.recording_file)
             os.rename(self.temp_recording_file, self.recording_file)
