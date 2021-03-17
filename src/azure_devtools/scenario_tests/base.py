@@ -30,7 +30,10 @@ class IntegrationTestBase(unittest.TestCase):
         return create_random_name(prefix=prefix, length=length)
 
     def create_temp_file(self, size_kb, full_random=False):
-        """ Create a temporary file for testing. The test harness will delete the file during tearing down. """
+        """
+        Create a temporary file for testing. The test harness will delete the file during tearing down.
+        :param float size_kb: specify the generated file size in kb.
+        """
         fd, path = tempfile.mkstemp()
         os.close(fd)
         self.addCleanup(lambda: os.remove(path))
@@ -40,8 +43,10 @@ class IntegrationTestBase(unittest.TestCase):
                 chunk = os.urandom(1024)
             else:
                 chunk = bytearray([0] * 1024)
-            for _ in range(size_kb):
+            for _ in range(int(size_kb)):
                 f.write(chunk)
+            chunk = os.urandom(int(1024 * (size_kb % 1)))
+            f.write(chunk)
 
         return path
 
@@ -204,7 +209,7 @@ class ReplayableTest(IntegrationTestBase):  # pylint: disable=too-many-instance-
     @classmethod
     def _custom_request_query_matcher(cls, r1, r2):
         """ Ensure method, path, and query parameters match. """
-        from six.moves.urllib_parse import urlparse, parse_qs  # pylint: disable=import-error,relative-import
+        from six.moves.urllib_parse import urlparse, parse_qs  # pylint: disable=import-error, relative-import
 
         url1 = urlparse(r1.uri)
         url2 = urlparse(r2.uri)

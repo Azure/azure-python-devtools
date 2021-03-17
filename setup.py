@@ -8,9 +8,7 @@
 import io
 from setuptools import setup
 
-
 VERSION = "1.2.1"
-
 
 CLASSIFIERS = [
     'Development Status :: 3 - Alpha',

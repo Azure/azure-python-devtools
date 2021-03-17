@@ -63,6 +63,12 @@ class SubscriptionRecordingProcessor(RecordingProcessor):
                         r'https://\1/{}'.format(self._replacement),
                         retval,
                         flags=re.IGNORECASE)
+
+        # subscription presents in private dns is abnormal
+        retval = re.sub(r'\\/(subscriptions)\\/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}',
+                        r'\\/\1\\/{}'.format(self._replacement),
+                        retval,
+                        flags=re.IGNORECASE)
         return retval
 
 
@@ -98,8 +104,8 @@ class LargeResponseBodyProcessor(RecordingProcessor):
 
                 response['body']['string'] = \
                     "!!! The response body has been omitted from the recording because it is larger " \
-                    "than {} KB. It will be replaced with blank content of {} bytes while replay. " \
-                    "{}{}".format(self._max_response_body, length, self.control_flag, length)
+                    "than {max_body} KB. It will be replaced with blank content of {length} bytes while replay. " \
+                    "{flag}{length}".format(max_body=self._max_response_body, length=length, flag=self.control_flag)
         return response
 
 

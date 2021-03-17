@@ -112,7 +112,9 @@ class TestRecordingProcessors(unittest.TestCase):
         body_templates = ['https://management.azure.com/subscriptions/{}/providers/Microsoft.ContainerRegistry/'
                           'checkNameAvailability?api-version=2017-03-01',
                           'https://graph.Windows.net/{}/applications?api-version=1.6',
-                          "{{'scope':'/subscriptions/{}', 'another_data':'/Microsoft.Something'}}"]
+                          "{{'scope':'/subscriptions/{}', 'another_data':'/Microsoft.Something'}}",
+                          'https://management.azure.com\\/subscriptions\\/{}\\/providers\\/'
+                          'Microsoft.ContainerRegistry\\/checkNameAvailability?api-version=2017-03-01']
 
         location_header_template = 'https://graph.windows.net/{}/directoryObjects/' \
                                    'f604c53a-aa21-44d5-a41f-c1ef0b5304bd/Microsoft.DirectoryServices.Application'
