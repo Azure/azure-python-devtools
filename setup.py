@@ -8,9 +8,7 @@
 import io
 from setuptools import setup
 
-
-VERSION = "1.2.0"
-
+VERSION = "1.2.1"
 
 CLASSIFIERS = [
     'Development Status :: 3 - Alpha',
@@ -29,7 +27,7 @@ CLASSIFIERS = [
 DEPENDENCIES = [
     'ConfigArgParse>=0.12.0',
     'six>=1.10.0',
-    'vcrpy>=1.11.0',
+    'vcrpy==3.0.0'
 ]
 
 with io.open('README.rst', 'r', encoding='utf-8') as f:
@@ -49,13 +47,27 @@ setup(
     packages=[
         'azure_devtools',
         'azure_devtools.scenario_tests',
+        'azure_devtools.perfstress_tests',
         'azure_devtools.ci_tools',
     ],
+    entry_points={
+        'console_scripts': [
+            'perfstress = azure_devtools.perfstress_tests:run_perfstress_cmd',
+            'systemperf = azure_devtools.perfstress_tests:run_system_perfstress_tests_cmd',
+        ],
+    },
     extras_require={
         'ci_tools':[
             "PyGithub>=1.40", # Can Merge PR after 1.36, "requests" and tests after 1.40
             "GitPython",
             "requests>=2.0"
+        ],
+        'systemperf':[
+            "aiohttp>=3.0",
+            "requests>=2.0",
+            "tornado==6.0.3"
+            "pycurl==7.43.0.5"
+            "httpx==0.11.1"
         ]
     },
     package_dir={'': 'src'},

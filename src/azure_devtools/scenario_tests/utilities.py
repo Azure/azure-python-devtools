@@ -62,6 +62,12 @@ def is_text_payload(entity):
     return True
 
 
+def is_batch_payload(entity):
+    if _get_content_type(entity) == "multipart/mixed" and "&comp=batch" in entity.uri:
+        return True
+    return False
+
+
 def is_json_payload(entity):
     return _get_content_type(entity) == 'application/json'
 
@@ -70,7 +76,10 @@ def trim_kwargs_from_test_function(fn, kwargs):
     # the next function is the actual test function. the kwargs need to be trimmed so
     # that parameters which are not required will not be passed to it.
     if not is_preparer_func(fn):
-        args, _, kw, _ = inspect.getargspec(fn)  # pylint: disable=deprecated-method
+        try:
+            args, _, kw, _, _, _, _ = inspect.getfullargspec(fn)
+        except AttributeError:
+            args, _, kw, _ = inspect.getargspec(fn) # pylint: disable=deprecated-method
         if kw is None:
             args = set(args)
             for key in [k for k in kwargs if k not in args]:
