@@ -5,7 +5,9 @@
 
 import contextlib
 import functools
+import os
 
+from azure_devtools.scenario_tests.const import ENV_RECOVER
 from .base import ReplayableTest
 from .utilities import create_random_name, is_text_payload, trim_kwargs_from_test_function
 from .recording_processors import RecordingProcessor
@@ -22,6 +24,7 @@ class AbstractPreparer(object):
         self.test_class_instance = None
         self.live_test = False
         self.disable_recording = disable_recording
+        self.recover = os.environ.get(ENV_RECOVER, None)
 
     def __call__(self, fn):
         def _preparer_wrapper(test_class_instance, **kwargs):
@@ -46,11 +49,15 @@ class AbstractPreparer(object):
 
             trim_kwargs_from_test_function(fn, kwargs)
 
+            error = False
             try:
                 fn(test_class_instance, **kwargs)
+            except Exception:  # pylint: disable=broad-except
+                error = True
             finally:
                 # Russian Doll - the last declared resource to be deleted first.
-                self.remove_resource_with_record_override(resource_name, **kwargs)
+                if not (self.recover and error):
+                    self.remove_resource_with_record_override(resource_name, **kwargs)
 
         setattr(_preparer_wrapper, '__is_preparer', True)
         functools.update_wrapper(_preparer_wrapper, fn)
