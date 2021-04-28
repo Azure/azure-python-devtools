@@ -5,15 +5,20 @@
 
 import contextlib
 import functools
+import os
+from logging import getLogger
 
+from azure_devtools.scenario_tests.const import ENV_TEST_NO_CLEANUP_ON_FAIL
 from .base import ReplayableTest
 from .utilities import create_random_name, is_text_payload, trim_kwargs_from_test_function
 from .recording_processors import RecordingProcessor
 
+logger = getLogger(__name__)
+
 
 # Core Utility
 
-class AbstractPreparer(object):
+class AbstractPreparer(object):  # pylint: disable=too-many-instance-attributes
     def __init__(self, name_prefix, name_len, disable_recording=False):
         self.name_prefix = name_prefix
         self.name_len = name_len
@@ -22,6 +27,7 @@ class AbstractPreparer(object):
         self.test_class_instance = None
         self.live_test = False
         self.disable_recording = disable_recording
+        self.no_cleanup_on_fail = os.environ.get(ENV_TEST_NO_CLEANUP_ON_FAIL, None)
 
     def __call__(self, fn):
         def _preparer_wrapper(test_class_instance, **kwargs):
@@ -46,11 +52,21 @@ class AbstractPreparer(object):
 
             trim_kwargs_from_test_function(fn, kwargs)
 
+            error = False
             try:
                 fn(test_class_instance, **kwargs)
+            except Exception as e:  # pylint: disable=broad-except
+                error = True
+                raise e
             finally:
                 # Russian Doll - the last declared resource to be deleted first.
-                self.remove_resource_with_record_override(resource_name, **kwargs)
+                if self.no_cleanup_on_fail and error:
+                    logger.warning(
+                        'AZURE_TEST_NO_CLEANUP_ON_FAIL is set. '
+                        'Resources are not removed since the test case failed. '
+                        'Remember to clean up resources after debugging the error.')
+                else:
+                    self.remove_resource_with_record_override(resource_name, **kwargs)
 
         setattr(_preparer_wrapper, '__is_preparer', True)
         functools.update_wrapper(_preparer_wrapper, fn)
