@@ -122,8 +122,12 @@ class ReplayableTest(IntegrationTestBase):  # pylint: disable=too-many-instance-
             recording_dir,
             '{}.yaml'.format(recording_name or method_name)
         )
-        if self.is_live and os.path.exists(self.recording_file):
-            os.remove(self.recording_file)
+        self.temp_recording_file = os.path.join(
+            recording_dir,
+            '{}.temp.yaml'.format(recording_name or method_name)
+        )
+        if self.is_live and os.path.exists(self.temp_recording_file):
+            os.remove(self.temp_recording_file)
 
         self.in_recording = self.is_live or not os.path.exists(self.recording_file)
         self.test_resources_count = 0
@@ -133,9 +137,11 @@ class ReplayableTest(IntegrationTestBase):  # pylint: disable=too-many-instance-
         super(ReplayableTest, self).setUp()
 
         # set up cassette
-        cm = self.vcr.use_cassette(self.recording_file)
+        cm = self.vcr.use_cassette(self.temp_recording_file if self.in_recording else self.recording_file)
         self.cassette = cm.__enter__()
         self.addCleanup(cm.__exit__)
+        if self.in_recording:
+            self.addCleanup(self._save_recording_file)
 
         # set up mock patches
         if self.in_recording:
@@ -153,6 +159,14 @@ class ReplayableTest(IntegrationTestBase):  # pylint: disable=too-many-instance-
         # Autorest.Python 3.x
         assert not [t for t in threading.enumerate() if t.name.startswith("LROPoller")], \
             "You need to call 'result' or 'wait' on all LROPoller you have created"
+
+    def _save_recording_file(self, *args):  # pylint: disable=unused-argument
+        if self.in_recording and \
+                not self._outcome.errors and not self._outcome.skipped:  # pylint: disable=protected-access
+            self.cassette._save(force=True)  # pylint: disable=protected-access
+            if os.path.exists(self.recording_file):
+                os.remove(self.recording_file)
+            os.rename(self.temp_recording_file, self.recording_file)
 
     def _process_request_recording(self, request):
         if self.disable_recording:
