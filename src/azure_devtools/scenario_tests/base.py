@@ -126,8 +126,6 @@ class ReplayableTest(IntegrationTestBase):  # pylint: disable=too-many-instance-
             recording_dir,
             '{}.temp.yaml'.format(recording_name or method_name)
         )
-        if self.is_live and os.path.exists(self.temp_recording_file):
-            os.remove(self.temp_recording_file)
 
         self.in_recording = self.is_live or not os.path.exists(self.recording_file)
         self.test_resources_count = 0
@@ -161,12 +159,15 @@ class ReplayableTest(IntegrationTestBase):  # pylint: disable=too-many-instance-
             "You need to call 'result' or 'wait' on all LROPoller you have created"
 
     def _save_recording_file(self, *args):  # pylint: disable=unused-argument
-        if self.in_recording and \
-                not self._outcome.errors and not self._outcome.skipped:  # pylint: disable=protected-access
+        if self.in_recording:
             self.cassette._save(force=True)  # pylint: disable=protected-access
-            if os.path.exists(self.recording_file):
-                os.remove(self.recording_file)
-            os.rename(self.temp_recording_file, self.recording_file)
+            if self._outcome.errors or self._outcome.skipped:   # pylint: disable=protected-access
+                # remove temp file
+                os.remove(self.temp_recording_file)
+            else:
+                if os.path.exists(self.recording_file):
+                    os.remove(self.recording_file)
+                os.rename(self.temp_recording_file, self.recording_file)
 
     def _process_request_recording(self, request):
         if self.disable_recording:
