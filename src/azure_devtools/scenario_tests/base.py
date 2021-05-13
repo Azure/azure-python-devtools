@@ -159,8 +159,8 @@ class ReplayableTest(IntegrationTestBase):  # pylint: disable=too-many-instance-
             "You need to call 'result' or 'wait' on all LROPoller you have created"
 
     def _save_recording_file(self, *args):  # pylint: disable=unused-argument
-        if self.in_recording:
-            self.cassette._save(force=True)  # pylint: disable=protected-access
+        if self.in_recording and self.cassette.dirty:
+            self.cassette._save()  # pylint: disable=protected-access
             if self._outcome.errors or self._outcome.skipped:   # pylint: disable=protected-access
                 # remove temp file
                 os.remove(self.temp_recording_file)
