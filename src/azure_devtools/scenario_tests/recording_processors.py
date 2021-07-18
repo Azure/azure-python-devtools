@@ -66,6 +66,13 @@ class SubscriptionRecordingProcessor(RecordingProcessor):
                         r'\\/\1\\/{}'.format(self._replacement),
                         retval,
                         flags=re.IGNORECASE)
+
+        # Microsoft.Management managementGroups presents in all api call
+        retval = re.sub('/(managementGroups)/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}',
+                        r'/\1/{}'.format(self._replacement),
+                        val,
+                        flags=re.IGNORECASE)
+
         return retval
 
 
