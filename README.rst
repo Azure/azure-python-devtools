@@ -1,6 +1,8 @@
 .. image:: https://travis-ci.org/Azure/azure-python-devtools.svg?branch=master
     :target: https://travis-ci.org/Azure/azure-python-devtools
 
+*Disclaimer*: The package "azure-devtools" is no longer maintened nor used in any Microsoft projects anymore.
+
 Development tools for Python-based Azure tools
 ==============================================
 
